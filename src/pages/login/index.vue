@@ -29,7 +29,7 @@
               <input type="password" name="" id="" placeholder="请输入您的密码" />
             </view>
           </view>
-          <view class="submit-btn">
+          <view class="submit-btn" @click="toIndexPage()">
             <span>登录</span>
           </view>
         </view>
@@ -38,8 +38,17 @@
   </view>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
+  methods: {
+    toIndexPage() {
+      uni.navigateTo({
+        url: '/pages/index/index',
+      });
+    }
+  }
+})
 </script>
 
 <style scoped>

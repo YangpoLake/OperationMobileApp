@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/iconfont/iconfont.css">
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .guide-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-container {
+      height: 24px;
+      padding: 15px;
+      flex-shrink: 0;
+      display: flex;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+    }
+
+    .header-container .left,
+    .header-container .right {
+      font-size: 16px;
+      width: 30px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-container .center {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .main-container {
+      flex-grow: 1;
+    }
+
+    .image-map-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .ctrl-btn-group {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .canvas-contrl {
+      width: 45px;
+      height: 45px;
+      font-size: 24px;
+      padding: 5px;
+      box-shadow: 0px 0px 15px #ccc;
+      background-color: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="guide-container">
+    <div class="main-container">
+      <div class="image-map-container">
+        <canvas id="canvas" class="canvas"
+          onmousedown="_this.changeCanvasCanMove(true)" onmouseup="_this.changeCanvasCanMove(false)"
+          onmousemove="_this.changeCanvasCenter()"></canvas>
+        <div class="ctrl-btn-group">
+          <div class="canvas-contrl scaling-minus" onclick="_this.changeImageScaling(_this.imageScaling/2)">
+            <text class="iconfont icon-plus"></text>
+          </div>
+          <div class="canvas-contrl scaling-plus" onclick="_this.changeImageScaling(_this.imageScaling*2)">
+            <text class="iconfont icon-minus"></text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const _this = {
+      canvasCenter: [0, 0],
+      canvasWidth: window.innerWidth * 2,
+      canvasHeight: window.innerHeight * 2,
+      canvasContext: {},
+      canvasCanMove: false,
+      imageSize: [583, 231],
+      imageScaling: 1,
+      imageList: [
+      ],
+      drawList: [],
+      drawInterval: 0,
+
+
+      initImageList() {
+        let count = 0;
+        for (let i = 12; i > 0; i--) {
+          for (let j = 0; j < 12; j++) {
+            count += 1;
+            (_this.imageList).push({
+              x: (_this.imageSize[0] * j) - (6 * _this.imageSize[0]),
+              y: (_this.imageSize[1] * i) - (6 * _this.imageSize[1]),
+              url: "http://ybh.douxz.work/map_images/images/image_map_" + count + ".jpg"
+            });
+          }
+        }
+      },
+      initDraw() {
+        const canvas = document.getElementById("canvas");
+        canvas.width = _this.canvasWidth;
+        canvas.height = _this.canvasHeight;
+        _this.canvasContext = canvas.getContext("2d");
+        (_this.canvasContext).translate(0.5, 0.5);
+
+        (_this.drawList).push(
+          _this.drawImages
+        );
+      },
+      drawMachine() {
+        requestAnimationFrame(_this.drawMachine);
+        _this.drawList.forEach((draw) => {
+          draw();
+        });
+        _this.drawList = [];
+      },
+      drawImages() {
+        _this.canvasContext.clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
+        _this.imageList.forEach((img) => {
+          if (Math.abs((_this.imageScaling / 0.5 * img.x) - (_this.imageScaling / 0.5 * _this.canvasCenter[0])) > (6 * _this.imageSize[0]) * _this.imageScaling / 0.5 &&
+            Math.abs((_this.imageScaling / 0.5 * img.y) - (_this.imageScaling / 0.5 * _this.canvasCenter[1])) > (6 * _this.imageSize[1]) * _this.imageScaling / 0.5) {
+            return;
+          }
+          const image = new Image();
+          image.src = img.url;
+
+          const scalingX = img.x * _this.imageScaling;
+          const scalingY = img.y * _this.imageScaling;
+
+          const canvasX = scalingX + window.innerWidth + _this.canvasCenter[0];
+          const canvasY = (0 - scalingY) + window.innerHeight - _this.canvasCenter[1];
+
+          image.onload = () => {
+            (_this.canvasContext).drawImage(
+              image,
+              canvasX,
+              canvasY,
+              _this.imageSize[0] * _this.imageScaling,
+              _this.imageSize[1] * _this.imageScaling
+            );
+          }
+        });
+      },
+      changeImageScaling(value) {
+        if (value <= 0.1) {
+          value = 0.125;
+          uni.showToast({
+            title: "已到最小缩放",
+            duration: 2000,
+            icon: "none"
+          });
+        }
+        _this.imageScaling = value;
+        (_this.drawList).push(
+          _this.drawImages
+        );
+      },
+      changeCanvasCanMove(flag) {
+        _this.canvasCanMove = flag;
+      },
+      changeCanvasCenter(event) {
+        if (_this.canvasCanMove) {
+          _this.canvasCenter = [
+            _this.canvasCenter[0] + event.movementX,
+            _this.canvasCenter[1] - event.movementY
+          ];
+          (_this.drawList).push(
+            _this.drawImages
+          );
+        }
+      }
+    }
+
+    _this.initImageList();
+    _this.initDraw();
+    _this.drawMachine();
+  </script>
+</body>
+
+</html>

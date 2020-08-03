@@ -11,6 +11,66 @@
 			"style": {
 				"navigationBarTitleText": "富春山居-首页"
 			}
+		},
+		{
+			"path": "pages/reportForRepair/list",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/reportForRepair/push",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/reportForRepair/feedback",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/reportForRepair/detail",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/index/mine",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/other/about",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/other/callus",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/order/index",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/index/device",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
+		},
+		{
+			"path": "pages/other/alarm",
+			"style": {
+				"navigationBarTitleText": "富春山居-首页"
+			}
 		}
 	],
 	"globalStyle": {
